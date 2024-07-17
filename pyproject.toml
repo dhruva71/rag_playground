@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 chromadb = "^0.5.4"
 openai = "^1.35.14"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
