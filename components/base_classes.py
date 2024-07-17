@@ -24,11 +24,11 @@ class Reader(ABC):
 
 class Generator(ABC):
     """
-    Base class for Generator. This provides the interface for generating text using a reader output.
+    Base class for Generator. This provides the interface for generating text using an LLM object.
     """
 
     @abstractmethod
-    def generate(self, reader_output):
+    def generate(self, context: list[str], query: str):
         pass
 
 
@@ -127,6 +127,7 @@ class Datastore(ABC):
 class RAGStrategy(ABC):
     """
     Base class for RAG strategy.
+    This provides the interface for reading, embedding, generating and retrieving documents.
     """
 
     @abstractmethod
@@ -138,7 +139,7 @@ class RAGStrategy(ABC):
         pass
 
     @abstractmethod
-    def generate(self, reader_output):
+    def generate(self, context: list[str], query: str):
         pass
 
     @abstractmethod

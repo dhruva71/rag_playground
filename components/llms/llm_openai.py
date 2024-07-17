@@ -9,7 +9,7 @@ class LLMOpenAI(base_classes.LLM):
         self.client = OpenAI(api_key=api_key)
         self.model = model
 
-    def generate(self, prompt: str):
+    def generate(self, prompt: str) -> str:
         chat_completion = self.client.chat.completions.create(
             messages=[
                 {
