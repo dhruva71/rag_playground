@@ -1,5 +1,5 @@
-import os
 from openai import OpenAI
+
 from components import base_classes
 
 
