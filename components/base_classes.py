@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 
 class Retriever(ABC):
@@ -47,7 +48,7 @@ class Datastore(ABC):
     """
 
     @abstractmethod
-    def store(self, data):
+    def store(self, data) -> Optional[str]:
         pass
 
     @abstractmethod

@@ -1,3 +1,5 @@
+from typing import Optional
+
 import chromadb
 from components import base_classes
 
@@ -7,8 +9,9 @@ class DatastoreChroma(base_classes.Datastore):
     Embedder class for storing embeddings in a Chroma database.
     """
 
-    def __init__(self, storage_path=None, tenant_id=None, database=None, collection_name=None, embedding_function=None,
-                 collection_metadata=None):
+    def __init__(self, storage_path=None, tenant_id: Optional[str] = None, database: Optional[str] = None,
+                 collection_name: Optional[str] = None, embedding_function=None,
+                 collection_metadata: Optional[dict[str, str]] = None):
         """
         Initializes the EmbedderChroma object.
         :param storage_path: Path to the Chroma database. If None, uses "./chromadb".
@@ -41,13 +44,30 @@ class DatastoreChroma(base_classes.Datastore):
         except Exception as e:
             raise ValueError(f"Error initializing Chroma database: {e}")
 
-    def store(self, data: str, collection=None):
+    def store(self, text: str, collection: Optional[str] = None, metadata: Optional[list[str]] = None) -> str:
         if collection is None:
             collection = self.collection
-        collection.add(documents=[data], ids=[f'id_{self.count()}'])
+        document_id = f'id_{self.count()}'  # generate a unique ID
+        collection.add(documents=[text], ids=[document_id], metadatas=metadata)
 
-    def retrieve(self, query):
-        pass
+        return document_id
+
+    def retrieve(self, query: str, collection: Optional[str] = None, num_results: int = 3, **kwargs):
+        """
+        Retrieves documents from the collection based on the query. Returns the top `num_results` documents.
+        :param query: The query to search for.
+        :param collection: The collection to search in. If None, uses the default collection.
+        :param num_results: The number of results to return. Default is 3.
+        :param kwargs: Extra arguments to pass to the Chroma query. For example, `where`, `where_document`, etc.
+        :return: List of documents matching the query.
+        """
+        if collection is None:
+            collection = self.collection
+        return collection.query(
+            query_texts=[query],
+            n_results=3,
+            **kwargs
+        )
 
     def delete(self, query):
         pass
