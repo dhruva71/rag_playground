@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 
-class Retriever(ABC):
+class LLM(ABC):
     """
-    Base class for Retriever. This provides the interface for retrieving documents.
+    Base class for LLM. This provides the interface for using a language model.
     """
 
     @abstractmethod
-    def retrieve(self, query):
+    def generate(self, prompt):
         pass
 
 
