@@ -33,7 +33,7 @@ class RagStrategyNaive(base_classes.RAGStrategy):
         return self.embedder.embed(text)
 
     def retrieve(self, query):
-        self.datastore.retrieve(query=query)
+        return self.datastore.retrieve(query=query)
 
-    def generate(self, context: list[str], query: str):
-        self.generator.generate(context=context, query=query)
+    def generate(self, context: list[str], query: str, verbose: bool = False) -> str:
+        return self.generator.generate(context=context, query=query, verbose=verbose)

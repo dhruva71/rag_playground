@@ -38,7 +38,11 @@ class Embedder(ABC):
     """
 
     @abstractmethod
-    def embed(self, text):
+    def __call__(self, input):
+        pass
+
+    @abstractmethod
+    def embed(self, texts: list[str]):
         pass
 
 

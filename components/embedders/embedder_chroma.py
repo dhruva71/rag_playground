@@ -7,11 +7,12 @@ class EmbedderChroma(base_classes.Embedder):
     Embedder class for generating embeddings using a Chroma database.
     """
 
-    def embed(self, text):
-        """
-        Embeds text using the Chroma database.
-        :param text: Text to embed.
-        :return: Embedding of the text.
-        """
-        embedding_function = embedding_functions.DefaultEmbeddingFunction()
-        return embedding_function(text)
+    def __init__(self):
+        self.embedding_function = embedding_functions.DefaultEmbeddingFunction()
+
+    def embed(self, texts: list[str]):
+        return self.embedding_function(texts)
+
+    def __call__(self, input):
+        return self.embed(input)
+

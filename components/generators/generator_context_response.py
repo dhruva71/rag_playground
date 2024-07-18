@@ -18,6 +18,10 @@ class GeneratorContextResponse(base_classes.Generator):
         else:
             self.prompt = prompt
 
-    def generate(self, context: list[str], query: str) -> str:
-        response = self.llm.generate(prompt=self.prompt.format(context=context, query=query))
+    def generate(self, context: list[str], query: str, verbose:bool = False) -> str:
+        prompt = self.prompt.format(context=context, query=query)
+        if verbose:
+            print("Prompt:")
+            print(prompt)
+        response = self.llm.generate(prompt=prompt)
         return response

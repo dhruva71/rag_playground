@@ -15,14 +15,16 @@ if __name__ == '__main__':
         "France is famous for its wines.",
         "Spain is famous for its beaches.",
         "USA is famous for its fast food.",
+        "The capital of India is Delhi.",
     ]
 
     ids = rag_strategy.read_and_store_documents(documents)
 
-    query = "What is the capital of France?"
+    query = "What is the capital of India?"
     retrieved_documents = rag_strategy.retrieve(query)
+    print(retrieved_documents['documents'])
 
-    context = [retrieved_documents[0]]
-    response = rag_strategy.generate(context=context, query=query)
+    context = [retrieved_documents['documents'][0]]
+    response = rag_strategy.generate(context=context, query=query, verbose=True)
 
     print(response)

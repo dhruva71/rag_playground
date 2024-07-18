@@ -1,7 +1,11 @@
 from typing import Optional
 
 import chromadb
+from chromadb.utils import embedding_functions
+
+import components.base_classes
 from components import base_classes
+from components.embedders import embedder_chroma
 
 
 def _verify_collection_name(collection_name):
@@ -15,7 +19,7 @@ class DatastoreChroma(base_classes.Datastore):
     """
 
     def __init__(self, storage_path=None, tenant_id: Optional[str] = None, database: Optional[str] = None,
-                 collection_name: Optional[str] = None, embedding_function=None,
+                 collection_name: Optional[str] = None, embedder: Optional[components.base_classes.Embedder] = None,
                  collection_metadata: Optional[dict[str, str]] = None):
         """
         Initializes the EmbedderChroma object.
@@ -35,16 +39,19 @@ class DatastoreChroma(base_classes.Datastore):
             database = chromadb.DEFAULT_DATABASE
         if collection_name is None:
             collection_name = "default_collection"
+        if embedder is None:
+            embedder = components.embedders.embedder_chroma.EmbedderChroma()
 
         # collection name must be between 3-64 characters
         _verify_collection_name(collection_name)
 
-        self.embedding_function = embedding_function
+        self.embedder = embedder
         self.collection_metadata = collection_metadata
 
         try:
             self.db_client = chromadb.PersistentClient(path=storage_path, tenant=tenant_id, database=database)
-            self.create_collection(collection_name=collection_name, embedding_function=embedding_function,
+            self.create_collection(collection_name=collection_name,
+                                   embedding_function=self.embedder,
                                    collection_metadata=collection_metadata)
         except Exception as e:
             raise ValueError(f"Error initializing Chroma database: {e}")
@@ -57,11 +64,12 @@ class DatastoreChroma(base_classes.Datastore):
 
         return document_id
 
-    def store_many(self, documents: list[str], collection: Optional[str] = None, metadata: Optional[list[str]] = None) -> list[str]:
+    def store_many(self, documents: list[str], collection: Optional[str] = None,
+                   metadata: Optional[list[str]] = None) -> list[str]:
         if collection is None:
             collection = self.collection
         document_ids = [f'id_{self.count() + i}' for i in range(len(documents))]
-        collection.add(documents=documents, ids=document_ids, metadatas=metadata)
+        self.collection.add(documents=documents, ids=document_ids, metadatas=metadata, )
 
         return document_ids
 
@@ -104,7 +112,7 @@ class DatastoreChroma(base_classes.Datastore):
         :return:
         """
         self.collection = self.db_client.create_collection(collection_name,
-                                                           embedding_function=self.embedding_function,
+                                                           embedding_function=self.embedder,
                                                            metadata=collection_metadata)
         return self.collection
 
