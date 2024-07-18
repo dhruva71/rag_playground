@@ -135,7 +135,7 @@ class RAGStrategy(ABC):
         pass
 
     @abstractmethod
-    def read(self, documents):
+    def read_and_store_documents(self, documents):
         pass
 
     @abstractmethod
