@@ -51,7 +51,7 @@ class DatastoreChroma(base_classes.Datastore):
         try:
             self.db_client = chromadb.PersistentClient(path=storage_path, tenant=tenant_id, database=database)
             self.create_collection(collection_name=collection_name,
-                                   embedding_function=self.embedder,
+                                   embedder=self.embedder,
                                    collection_metadata=collection_metadata)
         except Exception as e:
             raise ValueError(f"Error initializing Chroma database: {e}")
@@ -102,18 +102,22 @@ class DatastoreChroma(base_classes.Datastore):
     def count(self):
         return self.collection.count()
 
-    def create_collection(self, collection_name: Optional[str] = None, embedding_function=None,
+    def create_collection(self, collection_name: Optional[str] = None,
+                          embedder: Optional[components.base_classes.Embedder] = None,
                           collection_metadata: Optional[dict[str, str]] = None) -> chromadb.Collection:
         """
         Creates a new collection in the database. If the collection already exists, it will be overwritten.
-        :param collection_name:
-        :param embedding_function:
-        :param collection_metadata:
-        :return:
+        :param collection_name: Name of the collection to create.
+        :param embedder: Embedder to use for embedding text.
+        :param collection_metadata: Metadata to store with the collection.This is a collection of key-value pairs.
+        Refer to the Chroma documentation for more information.
+        :return: The created collection object.
         """
-        self.collection = self.db_client.create_collection(collection_name,
-                                                           embedding_function=self.embedder,
-                                                           metadata=collection_metadata)
+        if collection_name is None:
+            collection_name = "default_collection"
+        self.collection = self.db_client.get_or_create_collection(collection_name,
+                                                                  embedding_function=self.embedder,
+                                                                  metadata=collection_metadata)
         return self.collection
 
     def drop_collection(self, collection: Optional[str] = None):
