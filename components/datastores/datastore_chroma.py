@@ -57,7 +57,7 @@ class DatastoreChroma(base_classes.Datastore):
 
         return document_id
 
-    def store_many(self, documents: list[str]) -> list[str]:
+    def store_many(self, documents: list[str], collection: Optional[str] = None, metadata: Optional[list[str]] = None) -> list[str]:
         if collection is None:
             collection = self.collection
         document_ids = [f'id_{self.count() + i}' for i in range(len(documents))]

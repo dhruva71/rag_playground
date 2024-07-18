@@ -15,7 +15,7 @@ if __name__ == '__main__':
         "France is famous for its wines.",
         "Spain is famous for its beaches.",
         "USA is famous for its fast food.",
-        ]
+    ]
 
     ids = rag_strategy.read_and_store_documents(documents)
 
