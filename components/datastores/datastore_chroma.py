@@ -57,6 +57,14 @@ class DatastoreChroma(base_classes.Datastore):
 
         return document_id
 
+    def store_many(self, documents: list[str]) -> list[str]:
+        if collection is None:
+            collection = self.collection
+        document_ids = [f'id_{self.count() + i}' for i in range(len(documents))]
+        collection.add(documents=documents, ids=document_ids, metadatas=metadata)
+
+        return document_ids
+
     def retrieve(self, query: str, collection: Optional[str] = None, num_results: int = 3, **kwargs):
         """
         Retrieves documents from the collection based on the query. Returns the top `num_results` documents.

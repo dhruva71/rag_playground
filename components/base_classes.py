@@ -52,6 +52,10 @@ class Datastore(ABC):
         pass
 
     @abstractmethod
+    def store_many(self, documents: list[str]) -> Optional[list[str]]:
+        pass
+
+    @abstractmethod
     def retrieve(self, query):
         pass
 

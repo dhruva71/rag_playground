@@ -27,7 +27,7 @@ class RagStrategyNaive(base_classes.RAGStrategy):
         self.generator = generator
 
     def read_and_store_documents(self, documents: list[str]):
-        pass
+        self.datastore.store_many(documents=documents)
 
     def embed(self, text):
         return self.embedder.embed(text)
